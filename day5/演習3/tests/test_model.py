@@ -168,7 +168,9 @@ def test_model_inference_time_varying_sizes(train_model):
         times.append(avg_time)
 
         # 大きなデータセットでも5秒以内に推論できることを確認
-        assert avg_time < 5.0, f"{n_samples}サンプルの推論時間が長すぎます: {avg_time}秒"
+        assert (
+            avg_time < 5.0
+        ), f"{n_samples}サンプルの推論時間が長すぎます: {avg_time}秒"
 
     # データサイズと推論時間の関係が概ね線形であることを確認
     # (完全に線形でない場合もあるため、ゆるい検証)
@@ -205,7 +207,9 @@ def test_model_detailed_metrics(train_model):
     assert f1 >= 0.65, f"F1スコアが低すぎます: {f1}"
 
     # クラス間のバランスを確認（片方のクラスだけを予測していないか）
-    assert cm[0, 0] > 0 and cm[1, 1] > 0, f"片方のクラスのみを予測しています。混同行列: {cm}"
+    assert (
+        cm[0, 0] > 0 and cm[1, 1] > 0
+    ), f"片方のクラスのみを予測しています。混同行列: {cm}"
 
 
 def test_model_probability_calibration(train_model):
@@ -219,7 +223,9 @@ def test_model_probability_calibration(train_model):
     assert np.all(y_proba >= 0) and np.all(y_proba <= 1), "確率値が[0,1]の範囲外です"
 
     # 確率の合計が1になることを確認
-    assert np.allclose(np.sum(y_proba, axis=1), 1.0), "各サンプルの確率合計が1になっていません"
+    assert np.allclose(
+        np.sum(y_proba, axis=1), 1.0
+    ), "各サンプルの確率合計が1になっていません"
 
     # 高確率(>0.8)の予測の精度を検証
     high_conf_indices = np.where(np.max(y_proba, axis=1) > 0.8)[0]
@@ -265,4 +271,6 @@ def test_model_reproducibility(sample_data, preprocessor):
     predictions1 = model1.predict(X_test)
     predictions2 = model2.predict(X_test)
 
-    assert np.array_equal(predictions1, predictions2), "モデルの予測結果に再現性がありません"
+    assert np.array_equal(
+        predictions1, predictions2
+    ), "モデルの予測結果に再現性がありません"
